@@ -6,19 +6,21 @@ namespace StringCalculatorCore
 {
     public class StringCalculator
     {
+        const int MaxNumber = 1000;
+
         string[] delimiters = new string[3] {",", "\n" , ""};
         string defaultDelimiter = ",";
         List<int> negativeNum = new List<int>();
+
         public int Add(string numbers)
         {
             if (numbers == "") return 0;
 
             numbers = Parsedelimiters(numbers);
-            Console.WriteLine(numbers);
+
             var result = 0;
             var currentNumber = 0;
             bool numParsing = false;
-
             for (var i = 0; i < numbers.Length; i++)
             {
                 if (numbers[i].ToString() == defaultDelimiter)
@@ -36,17 +38,18 @@ namespace StringCalculatorCore
                     }
                     else
                     {
-                        result += currentNumber;
+                        result += (currentNumber > MaxNumber ? 0 : currentNumber);
                         currentNumber = num;
                     }
                     numParsing = true;
                 }
             }
+            result += (currentNumber > MaxNumber ? 0 : currentNumber);
 
-            if(negativeNum.Count != 0 )
+
+            if (negativeNum.Count != 0 )
                 throw new Exception("negatives not allowed: " + string.Join(" ", negativeNum));
-
-            result += currentNumber;
+            
             return result;
         }
 
