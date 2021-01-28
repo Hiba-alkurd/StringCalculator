@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace StringCalculatorCore
@@ -7,6 +8,7 @@ namespace StringCalculatorCore
     {
         string[] delimiters = new string[3] {",", "\n" , ""};
         string defaultDelimiter = ",";
+        List<int> negativeNum = new List<int>();
         public int Add(string numbers)
         {
             if (numbers == "") return 0;
@@ -17,13 +19,17 @@ namespace StringCalculatorCore
             var currentNumber = 0;
             bool numParsing = false;
 
-            foreach (var character in numbers)
+            for (var i = 0; i < numbers.Length; i++)
             {
-                if (character.ToString() == defaultDelimiter)
+                if (numbers[i].ToString() == defaultDelimiter)
                     numParsing = false;
+                else if(numbers[i].ToString() == "-")
+                {
+                    negativeNum.Add(-1 * int.Parse(numbers[i + 1].ToString()));
+                }
                 else
                 {
-                    int num = int.Parse(character.ToString());
+                    int num = int.Parse(numbers[i].ToString());
                     if (numParsing)
                     {
                         currentNumber = currentNumber * 10 + num;
@@ -37,8 +43,10 @@ namespace StringCalculatorCore
                 }
             }
 
-            result += currentNumber;
+            if(negativeNum.Count != 0 )
+                throw new Exception("negatives not allowed: " + string.Join(" ", negativeNum));
 
+            result += currentNumber;
             return result;
         }
 
