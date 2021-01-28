@@ -10,7 +10,6 @@ namespace StringCalculatorCore.Tests
         [InlineData("1,2", 3)]
         [InlineData("1\n2,3", 6)]
         [InlineData("//;\n1;2", 3)]
-        [InlineData("1\n2,3;10", 16)]
 
         public void Test1(string numbers, int expected)
         {
