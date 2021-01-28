@@ -11,8 +11,9 @@ namespace StringCalculatorCore
             var result = 0;
             foreach (var character in numbers)
             {
-                if ( character == ',') continue;
-                result += int.Parse(character+"");
+                int num;
+                if (int.TryParse(character.ToString(), out num))
+                    result += num;
             }
 
             return result;

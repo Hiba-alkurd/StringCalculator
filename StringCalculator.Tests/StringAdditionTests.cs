@@ -8,6 +8,7 @@ namespace StringCalculatorCore.Tests
         [InlineData("", 0)]
         [InlineData("1", 1)]
         [InlineData("1,2", 3)]
+        [InlineData("1\n2,3", 6)]
         public void Test1(string numbers, int expected)
         {
             //arrange
