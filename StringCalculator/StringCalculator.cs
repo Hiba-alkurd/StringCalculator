@@ -7,67 +7,61 @@ namespace StringCalculatorCore
     public class StringCalculator
     {
         const int MaxNumber = 1000;
-
-        string[] delimiters = new string[3] {",", "\n" , ""};
-        string defaultDelimiter = ",";
-        List<int> negativeNum = new List<int>();
+        readonly string[] delimiters = {",", "\n"};
+        string defaultDelimiter;
+        readonly List<int> negativeNum = new List<int>();
 
         public int Add(string numbers)
         {
             if (numbers == "") return 0;
 
-            numbers = Parsedelimiters(numbers);
+            var numbersStringArray = ParseDelimiters(numbers);
+            var numbersArray = ParseStringtoInt(numbersStringArray);
 
             var result = 0;
-            var currentNumber = 0;
-            bool numParsing = false;
-            for (var i = 0; i < numbers.Length; i++)
+            for (var i = 0; i < numbersArray.Length; i++)
             {
-                if (numbers[i].ToString() == defaultDelimiter)
-                    numParsing = false;
-                else if(numbers[i].ToString() == "-")
-                {
-                    negativeNum.Add(-1 * int.Parse(numbers[i + 1].ToString()));
-                }
-                else
-                {
-                    int num = int.Parse(numbers[i].ToString());
-                    if (numParsing)
-                    {
-                        currentNumber = currentNumber * 10 + num;
-                    }
-                    else
-                    {
-                        result += (currentNumber > MaxNumber ? 0 : currentNumber);
-                        currentNumber = num;
-                    }
-                    numParsing = true;
-                }
+                if (numbersArray[i] < 0)
+                    negativeNum.Add(numbersArray[i]);
+                if (numbersArray[i] > MaxNumber)
+                    result += 0;
+                else result += numbersArray[i];
             }
-            result += (currentNumber > MaxNumber ? 0 : currentNumber);
 
-
-            if (negativeNum.Count != 0 )
+             if (negativeNum.Count != 0 )
                 throw new Exception("negatives not allowed: " + string.Join(" ", negativeNum));
             
             return result;
         }
 
-        string Parsedelimiters(string numbers)
+        private int[] ParseStringtoInt(string[] numbersStringArray)
+        {
+            int[] nums = new int[numbersStringArray.Length];
+
+            for (int i = 0; i < numbersStringArray.Length; i++)
+            {
+                 int.TryParse(numbersStringArray[i], out nums[i]);
+            }
+
+            return nums;
+        }
+
+        private string[] ParseDelimiters(string numbers)
         {
             if (numbers.StartsWith("//"))
             {
-                delimiters[2] = numbers[2..numbers.IndexOf("\n")];
+                defaultDelimiter = numbers[2..numbers.IndexOf("\n")];
                 numbers = numbers[numbers.IndexOf("\n")..];
-              
-                return numbers.Replace(delimiters[2], defaultDelimiter).Trim();
+
+                return numbers.Split(new string[] { defaultDelimiter }, StringSplitOptions.None);
             }
-            
-            return numbers.Replace(delimiters[1], defaultDelimiter).Trim();
+
+            return numbers.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
         }
 
         static void Main()
         {
+
         }
     }
 }
