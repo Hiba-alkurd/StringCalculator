@@ -8,30 +8,23 @@ namespace StringCalculatorCore
     {
         const int MaxNumber = 1000;
         readonly string[] delimiters = {",", "\n"};
-        string defaultDelimiter;
-        readonly List<int> negativeNum = new List<int>();
+        
 
         public int Add(string numbers)
         {
-            if (numbers == "") return 0;
+            
+            List<int> negativeNum = new List<int>();
+
+            if (String.IsNullOrWhiteSpace(numbers)) return 0;
 
             var numbersStringArray = ParseDelimiters(numbers);
             var numbersArray = ParseStringtoInt(numbersStringArray);
 
-            var result = 0;
-            for (var i = 0; i < numbersArray.Length; i++)
-            {
-                if (numbersArray[i] < 0)
-                    negativeNum.Add(numbersArray[i]);
-                if (numbersArray[i] > MaxNumber)
-                    result += 0;
-                else result += numbersArray[i];
-            }
-
-             if (negativeNum.Count != 0 )
+            negativeNum = numbersArray.Where(num => num < 0).ToList();
+            if (negativeNum.Count != 0)
                 throw new Exception("negatives not allowed: " + string.Join(" ", negativeNum));
-            
-            return result;
+
+            return numbersArray.Where(num => num <= MaxNumber).Sum();
         }
 
         private int[] ParseStringtoInt(string[] numbersStringArray)
@@ -48,6 +41,8 @@ namespace StringCalculatorCore
 
         private string[] ParseDelimiters(string numbers)
         {
+            string defaultDelimiter;
+
             if (numbers.StartsWith("//"))
             {
                 defaultDelimiter = numbers[2..numbers.IndexOf("\n")];
@@ -59,9 +54,5 @@ namespace StringCalculatorCore
             return numbers.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        static void Main()
-        {
-
-        }
     }
 }
